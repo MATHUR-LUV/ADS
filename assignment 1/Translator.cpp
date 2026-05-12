@@ -122,3 +122,20 @@ std::string RATranslator::toRA(const QueryParts &parts, int indent)
 
     return finalBlock;
 }
+
+// Adding the function to support SQL to multiple equivalent RA translations using equvalence rules
+std::vector<std::string> RATranslator::toMultipleRA(const QueryParts &parts) {
+    std::vector<std::string> translations;
+    std::string baseRA = toRA(parts);   
+    translations.push_back(baseRA);
+    if (!parts.selection.empty()) {
+        std::string selectionRA = "σ<sub>" + parts.selection + "</sub>(" + baseRA + ")";
+        translations.push_back(selectionRA);
+    }
+    if (!parts.projection.empty() && parts.projection != "*") {
+        std
+::string projectionRA = "π<sub>" + parts.projection + "</sub>(" + baseRA + ")";
+        translations.push_back(projectionRA);
+    }
+    return translations;
+}
